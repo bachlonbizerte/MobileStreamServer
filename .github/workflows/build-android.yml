@@ -29,7 +29,7 @@ jobs:
           git clone --depth 1 --branch v1.21.4 https://github.com/bluenviron/mediamtx.git /tmp/mediamtx
           cd /tmp/mediamtx
           go generate ./...
-          CGO_ENABLED=0 GOOS=android GOARCH=arm64 go build -trimpath -ldflags="-s -w" -o "$GITHUB_WORKSPACE/app/src/main/assets/mediamtx" .
+          CGO_ENABLED=0 GOOS=android GOARCH=arm64 go build -trimpath -ldflags="-s -w -checklinkname=0" -o "$GITHUB_WORKSPACE/app/src/main/assets/mediamtx" .
           file "$GITHUB_WORKSPACE/app/src/main/assets/mediamtx"
           chmod 644 "$GITHUB_WORKSPACE/app/src/main/assets/mediamtx"
 
