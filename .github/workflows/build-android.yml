@@ -46,6 +46,9 @@ jobs:
 
       - name: Build debug APK
         run: gradle --no-daemon :app:assembleDebug
+      - name: Verify MediaMTX inside APK
+        run: |
+          unzip -l app/build/outputs/apk/debug/app-debug.apk | grep "assets/mediamtx" 
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
