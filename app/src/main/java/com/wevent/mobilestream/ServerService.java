@@ -98,14 +98,14 @@ public class ServerService extends Service {
     private void startEngine() {
         if (engine != null && engine.isAlive()) return;
         try {
-            File bin = new File(getFilesDir(), "mediamtx");
-            try (InputStream in = getAssets().open("mediamtx");
-                 FileOutputStream out = new FileOutputStream(bin, false)) {
-                byte[] buffer = new byte[65536]; int n;
-                while ((n = in.read(buffer)) != -1) out.write(buffer, 0, n);
+            // Android extracts this executable from jniLibs into the app's nativeLibraryDir.
+            // Unlike filesDir, nativeLibraryDir is intended for executable native binaries.
+            File bin = new File(getApplicationInfo().nativeLibraryDir, "libmediamtx.so");
+            if (!bin.isFile()) {
+                throw new IllegalStateException("MediaMTX binary missing from nativeLibraryDir: " + bin.getAbsolutePath());
             }
-            if (!bin.setExecutable(true, true) && !bin.canExecute()) {
-                throw new IllegalStateException("Cannot mark MediaMTX executable");
+            if (!bin.canExecute()) {
+                throw new IllegalStateException("MediaMTX binary is not executable: " + bin.getAbsolutePath());
             }
 
             File config = new File(getFilesDir(), "mediamtx.yml");
@@ -130,7 +130,8 @@ public class ServerService extends Service {
             engine = pb.start();
             updateNotification("RTMP :1935 • SRT :8890 • Web :8080");
         } catch (Exception e) {
-            updateNotification("Engine not installed: add Android ARM64 MediaMTX asset");
+            String detail = e.getClass().getSimpleName() + (e.getMessage() == null ? "" : ": " + e.getMessage());
+            updateNotification("MediaMTX start failed: " + detail);
             android.util.Log.e("MSS", "MediaMTX start failed", e);
         }
     }

@@ -98,3 +98,7 @@ SRT read :
 - Le service utilise un Foreground Service `specialUse` avec notification permanente. Android 14 et les politiques OEM peuvent limiter le fonctionnement en arrière-plan.
 - Démarrage au boot désactivé conformément au choix de configuration.
 - Cette archive contient le code source et le pipeline de compilation ; elle ne contient pas encore l'APK final. Le workflow GitHub génère le binaire MediaMTX Android et l'APK.
+
+
+## V5 — intégration du moteur Android
+Le binaire MediaMTX est maintenant placé dans `app/src/main/jniLibs/arm64-v8a/libmediamtx.so` afin qu’Android l’extraie dans `nativeLibraryDir`, plutôt que de tenter de l’exécuter depuis `filesDir`. Le workflow vérifie sa présence dans l’APK avant de publier l’artefact.

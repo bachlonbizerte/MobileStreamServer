@@ -47,7 +47,7 @@ public class MainActivity extends Activity {
 
         TextView title = text("MOBILE STREAM SERVER", 23, 0xFFFFFFFF, true);
         page.addView(title);
-        TextView subtitle = text("PRO STREAMING CONTROL  •  ANDROID V3.0", 11, gold, true);
+        TextView subtitle = text("PRO STREAMING CONTROL  •  ANDROID V5.0", 11, gold, true);
         page.addView(subtitle);
 
         status = text("STARTING SERVER…", 17, gold, true);
