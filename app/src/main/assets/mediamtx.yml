@@ -1,0 +1,21 @@
+logLevel: info
+logDestinations: [stdout]
+rtsp: false
+rtmp: true
+hls: false
+webrtc: false
+srt: true
+moq: false
+rtmpAddress: :1935
+srtAddress: :8890
+api: true
+apiAddress: 127.0.0.1:9997
+metrics: true
+metricsAddress: 127.0.0.1:9998
+pprof: false
+playback: false
+pathDefaults:
+  record: false
+  maxReaders: 5
+paths:
+  all_others: {}

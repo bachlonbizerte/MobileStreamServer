@@ -1,0 +1,10 @@
+Mobile Stream Server V4.0
+MediaMTX pinned: v1.21.4
+Android target: API 35
+RTMP TCP: 1935
+SRT UDP: 8890
+Local API: 127.0.0.1:9997
+Local metrics: 127.0.0.1:9998
+Web dashboard: 8080
+Update check: GitHub Releases (repository must be configured)
+Startup: manual

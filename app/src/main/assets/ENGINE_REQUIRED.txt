@@ -1,0 +1,3 @@
+Le binaire MediaMTX Android ARM64 doit être placé ici sous le nom exact : mediamtx
+Il est généré par scripts/build-mediamtx-termux.sh.
+Le binaire Linux ARM64 téléchargé précédemment depuis GitHub n'est PAS compatible avec Android.

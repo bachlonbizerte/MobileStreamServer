@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mobile Stream Server</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#0b1220;color:#fff;font-family:Arial,sans-serif}
+header{padding:20px;background:#101a35;border-bottom:2px solid #c8a45d}.wrap{max-width:1000px;margin:auto;padding:16px}
+h1{font-size:21px;margin:0}small,.muted{color:#9eacc2}.gold{color:#c8a45d}.green{color:#39d98a}.red{color:#ff6464}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.card{background:#17243d;border-radius:12px;padding:16px;margin:10px 0}
+.label{font-size:11px;color:#aab5c9}.num{font-size:27px;font-weight:bold;margin:8px 0}
+.url{background:#0b1220;padding:10px;border-radius:7px;overflow-wrap:anywhere;font-size:12px;margin:7px 0}
+button{border:0;border-radius:7px;background:#c8a45d;color:#101a35;font-weight:bold;padding:10px 13px;margin:4px 2px}
+@media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr)}}
+</style></head><body>
+<header><div class="wrap"><h1>📡 MOBILE STREAM SERVER</h1><small>PRO STREAMING CONTROL · ANDROID V3</small></div></header>
+<div class="wrap">
+<div class="card"><div class="label">SERVER STATUS</div><div class="num" id="status">CONNECTING…</div><div class="muted" id="ip">Detecting network…</div></div>
+<div class="grid">
+<div class="card"><div class="label">ACTIVE PATHS</div><div class="num" id="paths">0</div></div>
+<div class="card"><div class="label">READERS</div><div class="num" id="readers">0</div></div>
+<div class="card"><div class="label">INBOUND</div><div class="num" id="in">0.00</div><div class="label">Mbps</div></div>
+<div class="card"><div class="label">OUTBOUND</div><div class="num" id="out">0.00</div><div class="label">Mbps</div></div>
+</div>
+<div class="grid">
+<div class="card"><b>RTMP · TCP 1935</b><p class="green">ENABLED</p><span id="rtmp" class="muted">0 connections</span></div>
+<div class="card"><b>SRT · UDP 8890</b><p class="green">ENABLED</p><span id="srt" class="muted">0 connections</span></div>
+</div>
+<h3 class="gold">LIVE STREAMS</h3><div id="list" class="card muted">No active stream</div>
+<h3 class="gold">QUICK URLS</h3><div class="card">
+<div class="label">RTMP PUBLISH</div><div id="rtmpurl" class="url">—</div><button onclick="copy('rtmpurl')">COPY RTMP</button>
+<div class="label">SRT PUBLISH</div><div id="srturl" class="url">—</div><button onclick="copy('srturl')">COPY SRT</button>
+</div>
+<div class="card"><div class="label">PHONE MONITORING</div><p id="ram">RAM: —</p><p id="thermal">Thermal: —</p><p class="muted" id="updated">Waiting…</p></div>
+</div>
+<script>
+const $=id=>document.getElementById(id),host=location.hostname;
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function copy(id){navigator.clipboard.writeText($(id).textContent).then(()=>alert("Copied"))}
+async function refresh(){try{
+const r=await fetch('/api/status',{cache:'no-store'});const d=await r.json();
+$('status').textContent=d.online?'● ONLINE':'● OFFLINE';$('status').className='num '+(d.online?'green':'red');
+$('ip').textContent='IP: '+d.ip+' · Web :8080';$('paths').textContent=d.itemCount||0;$('readers').textContent=d.readers||0;
+$('in').textContent=Number(d.inboundMbps||0).toFixed(2);$('out').textContent=Number(d.outboundMbps||0).toFixed(2);
+$('rtmp').textContent=(d.rtmpConnections||0)+' connections';$('srt').textContent=(d.srtConnections||0)+' connections';
+$('rtmpurl').textContent='rtmp://'+host+':1935/live/camera1';$('srturl').textContent='srt://'+host+':8890?streamid=publish:live/camera1';
+const items=d.items||[];$('list').innerHTML=items.length?items.map(x=>`<div class="card"><b>${esc(x.name)}</b><p class="${x.ready?'green':'gold'}">${x.ready?'READY':'WAITING'} · Readers: ${x.readerCount}</p></div>`).join(''):'No active stream';
+$('ram').textContent='RAM: '+(d.system?.ramText||'—');$('thermal').textContent='Thermal status: '+(d.system?.thermalStatus||'—');
+$('updated').textContent='Updated '+new Date().toLocaleTimeString();
+}catch(e){$('status').textContent='● OFFLINE';$('status').className='num red'}}
+refresh();setInterval(refresh,2500);
+</script></body></html>
